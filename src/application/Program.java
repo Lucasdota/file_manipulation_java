@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import model.entities.Product;
 
@@ -15,9 +16,20 @@ public class Program {
 
 	public static void main(String[] args) {
 		
+		Scanner sc = new Scanner(System.in);		
 		List<Product> products = new ArrayList<>();
-		String path = "C:\\Users\\lucas\\Desktop\\Ws-Eclipse\\csv_file\\products.csv";
-		String outputPath = "C:\\Users\\lucas\\Desktop\\Ws-Eclipse\\csv_file\\out\\summary.csv";
+		
+		System.out.println("Enter file path: ");
+		String path = sc.nextLine();
+		
+		// get parent folder
+		File sourceFile = new File(path);
+		String sourceFolderStr = sourceFile.getParent();
+				
+		// create output directory
+		boolean success = new File(sourceFolderStr + "\\out").mkdir();
+		System.out.println("Directory created successfully: " + success);
+		String targetFileStr = sourceFolderStr + "\\out\\summary.csv";
 		
 		// read
 		try (BufferedReader br = new BufferedReader(new FileReader(path))) {
@@ -35,14 +47,10 @@ public class Program {
 			}
 		} catch (IOException e) {
 			System.out.println("Error: " + e.getMessage());
-		}
-		
-		// create output directory
-		boolean success = new File("C:\\Users\\lucas\\Desktop\\Ws-Eclipse\\csv_file\\out").mkdir();
-		System.out.println("Directory created successfully: " + success);
+		}		
 		
 		// write
-		try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputPath))) {
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(targetFileStr))) {
 			for (Product p: products) {
 				bw.write(p.getName() + "," + String.format("%.2f", p.total()));
 				bw.newLine();
@@ -50,7 +58,6 @@ public class Program {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 		
 	}
 
